@@ -12,19 +12,24 @@ const step = ref('choose') // choose | create | join | configure
 const AVATARS = ['cat', 'dog', 'fox', 'bunny', 'bear', 'panda', 'unicorn', 'frog']
 const AVA_EMOJI = { cat: '🐱', dog: '🐶', fox: '🦊', bunny: '🐰', bear: '🐻', panda: '🐼', unicorn: '🦄', frog: '🐸' }
 
-// create form
+// create form. Most families have ONE home; split households can add more.
 const form = ref({
   familyName: '',
   parentName: '',
   childName: '',
   childAge: '',
   childAvatar: 'cat',
-  house1: 'Home 1',
-  house2: 'Home 2',
+  houses: [{ id: newId('house'), name: 'Home' }],
   resetHour: 4
 })
 
-const houseIds = ref({ h1: newId('house'), h2: newId('house') })
+function addHome() {
+  form.value.houses.push({ id: newId('house'), name: 'Home ' + (form.value.houses.length + 1) })
+}
+function removeHome(i) {
+  if (form.value.houses.length > 1) form.value.houses.splice(i, 1)
+}
+
 const childId = ref(newId('kid'))
 
 function doCreate() {
@@ -34,10 +39,10 @@ function doCreate() {
   }
   mintFamilyUnit()
   initDoc()
-  const houses = [
-    { id: houseIds.value.h1, name: form.value.house1 || 'Home 1' },
-    { id: houseIds.value.h2, name: form.value.house2 || 'Home 2' }
-  ]
+  const houses = form.value.houses.map((h, i) => ({
+    id: h.id,
+    name: (h.name || '').trim() || (form.value.houses.length > 1 ? 'Home ' + (i + 1) : 'Home')
+  }))
   createFamily({
     familyName: form.value.familyName,
     parents: form.value.parentName ? [{ id: newId('par'), name: form.value.parentName, role: 'parent' }] : [],
@@ -132,16 +137,22 @@ const syncedChildren = computed(() => state.profile.children || [])
         </div>
       </div>
 
-      <div class="row">
-        <div style="flex: 1">
-          <label>House 1 name</label>
-          <input v-model="form.house1" />
-        </div>
-        <div style="flex: 1">
-          <label>House 2 name</label>
-          <input v-model="form.house2" />
-        </div>
+      <label>Home{{ form.houses.length > 1 ? 's' : '' }}</label>
+      <p class="muted small" style="margin: 0 0 8px">
+        Most families have one home. If {{ form.childName || 'your child' }} splits time between
+        places (like two houses), add one for each.
+      </p>
+      <div v-for="(h, i) in form.houses" :key="h.id" class="row" style="margin-bottom: 8px">
+        <fa :icon="['fas', 'house']" />
+        <input v-model="h.name" :placeholder="'Home ' + (i + 1)" style="flex: 1" />
+        <button v-if="form.houses.length > 1" type="button" class="btn ghost danger" @click="removeHome(i)">
+          <fa :icon="['fas', 'xmark']" />
+        </button>
       </div>
+      <button type="button" class="btn ghost" @click="addHome">
+        <fa :icon="['fas', 'plus']" /> Add another home
+      </button>
+
       <label>New day starts at</label>
       <select v-model="form.resetHour">
         <option v-for="h in [0,1,2,3,4,5,6,7]" :key="h" :value="h">{{ h }}:00 am</option>

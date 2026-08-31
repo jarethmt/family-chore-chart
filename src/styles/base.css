@@ -124,6 +124,9 @@ label {
 .muted {
   color: var(--text-dim);
 }
+.small {
+  font-size: 0.8rem;
+}
 .center {
   text-align: center;
 }

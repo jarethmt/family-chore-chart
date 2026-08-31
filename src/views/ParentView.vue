@@ -123,10 +123,10 @@ const themes = ['cats', 'space', 'ocean', 'unicorn', 'jungle']
               <option value="evening">🌙 Evening</option>
             </select>
           </div>
-          <div>
+          <div v-if="houses.length > 1">
             <label>Shows at</label>
             <select :value="c.scope" @change="e => updateChore(c.id, { scope: e.target.value })">
-              <option value="shared">Both houses</option>
+              <option value="shared">All homes</option>
               <option v-for="h in houses" :key="h.id" :value="h.id">{{ h.name }} only</option>
             </select>
           </div>
