@@ -1,0 +1,41 @@
+/* Theme "worlds". Each sets the palette custom properties. Cats is the first fully
+   polished world; the others are stubs ready to be fleshed out in Phase 4. Applied by
+   setting data-theme on <html>. */
+
+html[data-theme='cats'] {
+  --bg: #241a2e;
+  --accent: #ffb3c7; /* soft kitten pink */
+  --accent-2: #b892ff; /* violet */
+  --good: #86e3b0;
+  --warn: #ffd27d;
+}
+
+html[data-theme='space'] {
+  --bg: #0e1030;
+  --accent: #7cc5ff;
+  --accent-2: #b18cff;
+}
+
+html[data-theme='ocean'] {
+  --bg: #06283d;
+  --accent: #57d8d8;
+  --accent-2: #6ea8ff;
+}
+
+html[data-theme='unicorn'] {
+  --bg: #2a1e34;
+  --accent: #ff9ecb;
+  --accent-2: #9ad9ff;
+}
+
+html[data-theme='jungle'] {
+  --bg: #16281b;
+  --accent: #9ed36a;
+  --accent-2: #5fc1a0;
+}
+
+/* Evening / bedtime mode dims the whole surface so a tablet isn't a bright light. */
+html[data-evening='true'] body {
+  filter: brightness(0.72) saturate(0.9);
+  transition: filter 1s ease;
+}
